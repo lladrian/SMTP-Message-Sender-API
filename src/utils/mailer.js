@@ -5,21 +5,14 @@ dotenv.config();
 
 
 const sendEmail = async (email, name, message) => {
+
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: 'adrianmanatad5182@gmail.com',
-      pass: 'gujpuqddrhvqxnty',
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
-
-  // const transporter = nodemailer.createTransport({
-  //   service: "Gmail",
-  //   auth: {
-  //     user: process.env.EMAIL_USER,
-  //     pass: process.env.EMAIL_PASS,
-  //   },
-  // });
 
   
   const mailOptions = {
@@ -50,7 +43,7 @@ const sendEmail = async (email, name, message) => {
   const adminMailOptions = {
     from: `"ADR | MAN - " <${process.env.EMAIL_USER}>`,
     to: process.env.EMAIL_USER, // Admin email
-    subject: "New Contact Form Submission - Yout Web Portfolio",
+    subject: "New Contact Form Submission - Web Portfolio",
     html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
             <h2 style="text-align: center; color: #4CAF50;">New Contact Form Submission</h2>
