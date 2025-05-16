@@ -132,12 +132,12 @@ app.get('/visit_page', async (req, res) => {
             if (diffMinutes < 20) {
                 return res.status(200).json({ message: 'Duplicate entry within 20 minutes.' });
             }
-
-            data.push(newExpense);
-            saveData(data);
-
-            return res.status(200).json({ message: 'Visit successfully added.' });
         }
+
+        data.push(newExpense);
+        saveData(data);
+        
+        return res.status(200).json({ message: 'Visit successfully added.' });
     } catch (error) {
         return res.status(500).json({ error: 'Failed to add visit.' });
     }
