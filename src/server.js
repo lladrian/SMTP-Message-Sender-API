@@ -86,7 +86,7 @@ app.get("/", (req, res) => {
 app.get('/visit_page', async (req, res) => { 
     try { 
         const data = loadData();
-        const ip = req.headers['x-forwarded-for'] || req.ip;
+        const ip = req.headers['x-forwarded-for']
         const now = new Date();
 
         const newExpense = {
@@ -153,8 +153,8 @@ app.get('/get_all_visit', async (req, res) => {
 app.post('/add_message', async (req, res) => {                              
     try { 
         //const ip = req.headers['x-forwarded-for'] || req.ip;
-        const ip = req.headers['x-forwarded-for'];
        // const ip = req.ip;
+        const ip = req.headers['x-forwarded-for'];
         const { email, name, message } = req.body;
 
         mailer(email, name, message, ip);
