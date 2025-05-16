@@ -86,7 +86,8 @@ app.get("/", (req, res) => {
 app.get('/visit_page', async (req, res) => { 
     try { 
         const data = loadData();
-        const ip = req.headers['x-forwarded-for']
+        //const ip = req.headers['x-forwarded-for']
+        const ip = req.headers['x-forwarded-for'].split(',')[0].trim();
         const now = new Date();
 
         const newExpense = {
@@ -97,7 +98,7 @@ app.get('/visit_page', async (req, res) => {
         };
 
         const recentVisit = data.find(entry => {
-            return entry.ip_address === ip && (now - new Date(entry.date)) < (60 * 60 * 1000); // 1 hour
+            return entry.ip_address === ip && (now - new Date(entry.date)) < (60 * 5 * 1000); // 1 hour
         });
 
         if (recentVisit) {
@@ -154,7 +155,8 @@ app.post('/add_message', async (req, res) => {
     try { 
         //const ip = req.headers['x-forwarded-for'] || req.ip;
        // const ip = req.ip;
-        const ip = req.headers['x-forwarded-for'];
+        //const ip = req.headers['x-forwarded-for'];
+        const ip = req.headers['x-forwarded-for'].split(',')[0].trim();
         const { email, name, message } = req.body;
 
         mailer(email, name, message, ip);
