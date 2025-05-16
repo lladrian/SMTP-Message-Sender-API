@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-const sendEmail = async (email, name, message) => {
+const sendEmail = async (email, name, message, ip) => {
 
   const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -49,6 +49,7 @@ const sendEmail = async (email, name, message) => {
             <h2 style="text-align: center; color: #4CAF50;">New Contact Form Submission</h2>
             <p style="font-size: 16px; color: #333;">You have received a new message from ${name}:</p>
             <p style="font-size: 16px; color: #333;"><strong>Email:</strong> ${email}</p>
+              <p style="font-size: 16px; color: #333;"><strong>IP Address:</strong> ${ip}</p>
             <p style="font-size: 16px; color: #333;"><strong>Message:</strong></p>
             <p style="font-size: 16px; color: #333;">${message}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
