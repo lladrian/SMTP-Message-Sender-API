@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import rateLimit from 'express-rate-limit';
 import { randomUUID } from 'crypto';
+import moment from 'moment-timezone';
 
 
 // Path to the JSON file acting as a database
@@ -76,11 +77,17 @@ function getFormattedDate() {
       // Format the current date and expiration date
       const formattedExpirationDateTime = expirationDateTime.format('YYYY-MM-DD HH:mm:ss');
 
-  
+
       // Return both current and expiration date-time
       return formattedExpirationDateTime;
-  
   }
+
+function  formatDate (date) {
+    const pad = (n) => n.toString().padStart(2, '0');
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+           `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
 
 
 
@@ -102,29 +109,35 @@ app.get('/visit_page', async (req, res) => {
     try { 
         const data = loadData();
         //const ip = req.headers['x-forwarded-for']
-        const ip = req.headers['x-forwarded-for'].split(',')[0].trim();
-        const now = moment.tz('Asia/Manila');
+       // const ip = req.headers['x-forwarded-for'].split(',')[0].trim();
+        const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip || '').split(',')[0].trim();
+        const now = new Date();
 
         const newExpense = {
             id: randomUUID(), // Simple ID generation
             ip_address: ip,
             name : "",
-            datetime: storeCurrentDateTime(0, 'hours')
+            datetime: storeCurrentDateTime(0, 'hours'),
         };
 
-        const recentVisit = data.find(entry => {
-            const entryDate = moment.tz(entry.datetime, 'Asia/Manila');
-            return entry.ip_address === ip && now.diff(entryDate, 'minutes') < 5;
-        });
+        const recentVisit = data
+            .filter(entry => entry.ip_address === ip)
+            .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))[0];
 
         if (recentVisit) {
-            return res.status(200).json({ message: 'Already visited within the last hour.' });
+            const lastVisitTime = new Date(recentVisit.datetime);
+            const diffMs = now - lastVisitTime;
+            const diffMinutes = diffMs / (1000 * 60);
+
+            if (diffMinutes < 20) {
+                return res.status(200).json({ message: 'Duplicate entry within 20 minutes.' });
+            }
+
+            data.push(newExpense);
+            saveData(data);
+
+            return res.status(200).json({ message: 'Visit successfully added.' });
         }
-
-        data.push(newExpense);
-        saveData(data);
-
-        return res.status(200).json({ message: 'Visit successfully added.' });
     } catch (error) {
         return res.status(500).json({ error: 'Failed to add visit.' });
     }
