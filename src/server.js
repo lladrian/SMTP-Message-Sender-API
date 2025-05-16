@@ -67,6 +67,21 @@ function getFormattedDate() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
+  function storeCurrentDateTime(expirationAmount, expirationUnit) {
+      // Get the current date and time in Asia/Manila timezone
+      const currentDateTime = moment.tz("Asia/Manila");
+      // Calculate the expiration date and time
+      const expirationDateTime = currentDateTime.clone().add(expirationAmount, expirationUnit);
+  
+      // Format the current date and expiration date
+      const formattedExpirationDateTime = expirationDateTime.format('YYYY-MM-DD HH:mm:ss');
+
+  
+      // Return both current and expiration date-time
+      return formattedExpirationDateTime;
+  
+  }
+
 
 
 dotenv.config();
@@ -88,17 +103,18 @@ app.get('/visit_page', async (req, res) => {
         const data = loadData();
         //const ip = req.headers['x-forwarded-for']
         const ip = req.headers['x-forwarded-for'].split(',')[0].trim();
-        const now = new Date();
+        const now = moment.tz('Asia/Manila');
 
         const newExpense = {
             id: randomUUID(), // Simple ID generation
             ip_address: ip,
             name : "",
-            datetime: getFormattedDate()
+            datetime: storeCurrentDateTime(0, 'hours')
         };
 
         const recentVisit = data.find(entry => {
-            return entry.ip_address === ip && (now - new Date(entry.date)) < (60 * 5 * 1000); // 1 hour
+            const entryDate = moment.tz(entry.datetime, 'Asia/Manila');
+            return entry.ip_address === ip && now.diff(entryDate, 'minutes') < 5;
         });
 
         if (recentVisit) {
@@ -156,6 +172,7 @@ app.post('/add_message', async (req, res) => {
         //const ip = req.headers['x-forwarded-for'] || req.ip;
        // const ip = req.ip;
         //const ip = req.headers['x-forwarded-for'];
+        //123
         const ip = req.headers['x-forwarded-for'].split(',')[0].trim();
         const { email, name, message } = req.body;
 
