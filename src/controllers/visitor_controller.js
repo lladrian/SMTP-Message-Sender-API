@@ -46,6 +46,9 @@ export const visit_page = asyncHandler(async (req, res) => {
             //const lastVisitTime = new Date(recentVisit.visited_at);
             //const diffMs = now - lastVisitTime;
             //const diffMinutes = diffMs / (1000 * 60);
+
+                    return res.status(200).json({ data: diffMinutes, data2: lastVisitTime });
+
     
             if (diffMinutes < 10) {
                 return res.status(200).json({ message: 'Duplicate entry within 10 minutes.' });
