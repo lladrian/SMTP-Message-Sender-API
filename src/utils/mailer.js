@@ -7,8 +7,8 @@ dotenv.config();
 const sendEmail = async (email, name, message, ip) => {
 
   const transporter = nodemailer.createTransport({
-    service: "Gmail",
     host: 'smtp.gmail.com',
+    service: "Gmail",
     port: 587,
     secure: false, // use TLS
     auth: {
@@ -16,7 +16,7 @@ const sendEmail = async (email, name, message, ip) => {
       pass: process.env.EMAIL_PASS,
     },
   });
-    //service: "Gmail",
+
 
   
   const mailOptions = {
