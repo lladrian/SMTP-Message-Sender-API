@@ -2,6 +2,8 @@ import asyncHandler from 'express-async-handler';
 import moment from 'moment-timezone';
 import Visitor from '../models/visitors.js';
 import mailer from '../utils/mailer.js'; // Import the mailer utility
+import { DateTime } from "luxon";
+
 
 
 // Function to get the current date and time in Asia/Manila and store it in the database
@@ -23,7 +25,9 @@ function storeCurrentDateTime(expirationAmount, expirationUnit) {
 export const visit_page = asyncHandler(async (req, res) => {
     try {
         const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip || '').split(',')[0].trim();
-        const now = new Date();
+       // const now = new Date();
+        const now = DateTime.now().setZone("Asia/Manila");
+  
 
         const newVisitor = new Visitor({
             ip_address: ip,
@@ -37,9 +41,11 @@ export const visit_page = asyncHandler(async (req, res) => {
         .exec();
         
         if (recentVisit) {
-            const lastVisitTime = new Date(recentVisit.visited_at);
-            const diffMs = now - lastVisitTime;
-            const diffMinutes = diffMs / (1000 * 60);
+            const lastVisitTime = DateTime.fromFormat(recentVisit.visited_at, "yyyy-MM-dd HH:mm:ss", { zone: "Asia/Manila" });
+            const diffMinutes = now.diff(lastVisitTime, "minutes").toObject().minutes;
+            //const lastVisitTime = new Date(recentVisit.visited_at);
+            //const diffMs = now - lastVisitTime;
+            //const diffMinutes = diffMs / (1000 * 60);
     
             if (diffMinutes < 10) {
                 return res.status(200).json({ message: 'Duplicate entry within 20 minutes.' });

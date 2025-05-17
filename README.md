@@ -13,6 +13,8 @@ A simple SMPTP that allows users to message via GMAIL.
 ## What I installed to this app
 
 1. npm install express dotenv nodemon nodemailer moment-timezone mongoose express-async-handler
+2. npm install luxon
+
 
 ## Installation
 
