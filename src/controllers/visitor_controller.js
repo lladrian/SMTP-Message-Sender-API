@@ -47,15 +47,16 @@ export const visit_page = asyncHandler(async (req, res) => {
             //const diffMs = now - lastVisitTime;
             //const diffMinutes = diffMs / (1000 * 60);
 
-                    return res.status(200).json({ data: diffMinutes, data2: lastVisitTime });
 
     
-            if (diffMinutes < 10) {
+            if (diffMinutes < 1) {
                 return res.status(200).json({ message: 'Duplicate entry within 10 minutes.' });
             }
+
         }
 
         await newVisitor.save();
+            return res.status(200).json({ data: diffMinutes, data2: lastVisitTime });
 
         return res.status(200).json({ message: 'Visit successfully added.' });
     } catch (error) {
