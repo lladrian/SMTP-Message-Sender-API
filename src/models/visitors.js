@@ -7,7 +7,7 @@ const VisitorSchema = new mongoose.Schema({
   },
   name: { 
     type: String, 
-    required: true
+    required: false
   },
   visited_at: {
     type: String,

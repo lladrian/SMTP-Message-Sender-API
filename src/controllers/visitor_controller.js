@@ -31,6 +31,7 @@ export const visit_page = asyncHandler(async (req, res) => {
             visited_at: storeCurrentDateTime(0, 'hours'),
         });
 
+
         const recentVisit = await Visitor.findOne({ ip_address: ip })
         .sort({ visited_at: -1 }) // latest first
         .exec();
@@ -40,7 +41,7 @@ export const visit_page = asyncHandler(async (req, res) => {
             const diffMs = now - lastVisitTime;
             const diffMinutes = diffMs / (1000 * 60);
     
-            if (diffMinutes < 1) {
+            if (diffMinutes < 10) {
                 return res.status(200).json({ message: 'Duplicate entry within 20 minutes.' });
             }
         }
@@ -49,7 +50,7 @@ export const visit_page = asyncHandler(async (req, res) => {
 
         return res.status(200).json({ message: 'Visit successfully added.' });
     } catch (error) {
-        return res.status(500).json({ error: 'Failed to create admin entry' });
+        return res.status(500).json({ error: 'Failed to create visit.' });
     }
 });
 
