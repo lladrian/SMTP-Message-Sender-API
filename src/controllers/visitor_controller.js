@@ -1,7 +1,8 @@
 import asyncHandler from 'express-async-handler';
 import moment from 'moment-timezone';
 import Visitor from '../models/visitors.js';
-import mailer from '../utils/mailer.js'; // Import the mailer utility
+//import mailer from '../utils/mailer.js'; // Import the mailer utility
+import mailer from '../utils/mailer_resend.js'; // Import the mailer utility
 import { DateTime } from "luxon";
 
 
