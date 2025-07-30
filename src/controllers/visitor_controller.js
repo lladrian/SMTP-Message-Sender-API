@@ -21,6 +21,7 @@ function storeCurrentDateTime(expirationAmount, expirationUnit) {
     // Return both current and expiration date-time
     return formattedExpirationDateTime;
 }
+
 export const get_ip_address = asyncHandler(async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip || '').split(',')[0].trim();
 
